@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-gradient: linear-gradient(135deg, rgb(59, 130, 246), rgb(147, 51, 234));
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@keyframes rgb-border {
+  0% { border-color: #ff0000; }
+  33% { border-color: #00ff00; }
+  66% { border-color: #0000ff; }
+  100% { border-color: #ff0000; }
+}
+
+@layer components {
+  .network-info-card {
+    @apply bg-gray-50 dark:bg-gray-800 p-4 rounded-lg transition-all duration-300
+    border-2 border-blue-200 dark:border-blue-900
+    hover:border-transparent hover:shadow-lg relative
+    before:absolute before:inset-0 before:rounded-lg before:border-2
+    before:border-transparent hover:before:border-current
+    hover:before:animate-[rgb-border_3s_linear_infinite]
+    dark:hover:from-blue-900/30 dark:hover:to-purple-900/30;
+  }
+
+  .network-info-label {
+    @apply text-sm font-semibold text-gray-600 dark:text-gray-400;
+  }
+
+  .network-info-value {
+    @apply font-mono font-bold text-gray-900 dark:text-gray-100;
+  }
+
+  .table-header {
+    @apply px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider;
+  }
+
+  .table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-gray-100;
+  }
+
+  .table-cell-mono {
+    @apply px-6 py-4 whitespace-nowrap text-sm font-bold font-mono text-gray-900 dark:text-gray-100;
+  }
+
+  .subnet-table-container {
+    @apply border-2 border-purple-200 dark:border-purple-900 rounded-lg p-4
+    hover:border-transparent relative
+    before:absolute before:inset-0 before:rounded-lg before:border-2
+    before:border-transparent hover:before:border-current
+    hover:before:animate-[rgb-border_3s_linear_infinite];
+  }
+}
+
+.theme-switch {
+  @apply relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 focus:outline-none;
+}
+
+.theme-switch-thumb {
+  @apply inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-200;
+}
+
+.theme-switch[aria-checked="true"] {
+  @apply bg-blue-600;
+}
+
+.theme-switch[aria-checked="true"] .theme-switch-thumb {
+  @apply translate-x-5;
+}
