@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Network, Globe, AlertCircle, Moon, Sun } from 'lucide-react';
+import { Network, Globe, AlertCircle, Palette, SunMoon } from 'lucide-react';
 import {
   calculateNetwork,
   calculateNetmask,
@@ -95,82 +95,81 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-200`}>
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-end mb-4">
+    <div className="animated-bg">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex justify-end mb-6">
           <button
             role="switch"
             aria-checked={isDark}
             className="theme-switch"
             onClick={() => setIsDark(!isDark)}
           >
-            <span className="sr-only">Toggle dark mode</span>
-            <span className="theme-switch-thumb" aria-hidden="true">
-              {isDark ? <Moon className="h-3 w-3" /> : <Sun className="h-3 w-3" />}
-            </span>
+            <span className="sr-only">Toggle theme</span>
+            {isDark ? (
+              <Palette className="theme-icon theme-icon-dark" />
+            ) : (
+              <SunMoon className="theme-icon theme-icon-light" />
+            )}
           </button>
         </div>
 
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Network className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">CIDR Calculator</h1>
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Network className="h-10 w-10 text-blue-400" />
+            <h1 className="text-4xl font-bold text-white">CIDR Calculator</h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">Calculate network information and subnet ranges</p>
+          <p className="text-gray-400 text-lg">Calculate network information and subnet ranges</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8 border-2 border-blue-200 dark:border-blue-900">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="glass-panel p-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-bold text-gray-300 mb-2">
                 IP Address
               </label>
               <input
                 type="text"
                 value={ip}
                 onChange={(e) => setIp(e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md 
-                focus:ring-blue-500 focus:border-blue-500 dark:text-white"
+                className="glass-input w-full text-white"
                 placeholder="e.g. 192.168.1.1"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-bold text-gray-300 mb-2">
                 CIDR Range
               </label>
               <select
                 value={cidr}
                 onChange={(e) => setCidr(e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md 
-                focus:ring-blue-500 focus:border-blue-500 dark:text-white"
+                className="glass-input w-full text-white"
               >
                 {cidrRanges.map(({ value, ips }) => (
-                  <option key={value} value={value}>
+                  <option key={value} value={value} className="bg-gray-900">
                     /{value} - {ips.toLocaleString()} IP addresses
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-bold text-gray-300 mb-2">
                 Number of Subnets
               </label>
               <select
                 value={subnetCount}
                 onChange={(e) => setSubnetCount(parseInt(e.target.value))}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md 
-                focus:ring-blue-500 focus:border-blue-500 dark:text-white"
+                className="glass-input w-full text-white"
               >
-                <option value={0}>No subnets</option>
+                <option value={0} className="bg-gray-900">No subnets</option>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-                  <option key={num} value={num}>{num}</option>
+                  <option key={num} value={num} className="bg-gray-900">{num}</option>
                 ))}
               </select>
             </div>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 mb-4 p-4 bg-red-50 dark:bg-red-900/30 rounded-lg">
+            <div className="flex items-center gap-2 text-red-400 mb-6 p-4 glass-panel bg-red-500/10">
               <AlertCircle className="h-5 w-5" />
               <p className="font-bold">{error}</p>
             </div>
@@ -178,11 +177,11 @@ function App() {
 
           {networkInfo && (
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
+                <Globe className="h-6 w-6 text-blue-400" />
                 Network Information
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="network-info-card">
                   <p className="network-info-label">Network Address</p>
                   <p className="network-info-value">{networkInfo.baseIp}</p>
@@ -217,13 +216,13 @@ function App() {
 
           {subnets.length > 0 && (
             <div className="subnet-table-container">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Network className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
+                <Network className="h-6 w-6 text-blue-400" />
                 Subnet Information
               </h2>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-800">
+                <table className="min-w-full divide-y divide-gray-800">
+                  <thead>
                     <tr>
                       <th className="table-header">Subnet Name</th>
                       <th className="table-header">CIDR Block</th>
@@ -234,9 +233,9 @@ function App() {
                       <th className="table-header">Zone</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="divide-y divide-gray-800">
                     {subnets.map((subnet, index) => (
-                      <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                      <tr key={index} className="hover:bg-white/5 transition-colors duration-150">
                         <td className="table-cell">{subnet.name}</td>
                         <td className="table-cell-mono">{subnet.cidrBlock}</td>
                         <td className="table-cell-mono">{subnet.firstIp} - {subnet.lastIp}</td>
