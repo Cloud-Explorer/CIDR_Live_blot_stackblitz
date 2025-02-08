@@ -20,13 +20,7 @@ runcmd:
   # Build the project
   - npm run build
 
-  # Start the Vite development server (optional: can run in background)
-  - npm run dev -- --host &
-
-  # Enable firewall rules for Vite (port 5173)
-  - sudo ufw allow 5173/tcp
-
-  # Set up a systemd service to keep Vite running (Optional)
+  # Set up a systemd service to keep Vite running
   - echo "[Unit]
     Description=Vite React App
     After=network.target
@@ -41,6 +35,11 @@ runcmd:
     [Install]
     WantedBy=multi-user.target" | sudo tee /etc/systemd/system/vite-app.service
 
+  # Reload systemd and start the service
   - sudo systemctl daemon-reload
   - sudo systemctl enable vite-app.service
   - sudo systemctl start vite-app.service
+
+  # Open firewall for Vite on port 5173
+  - sudo ufw allow 5173/tcp
+  - sudo ufw reload
