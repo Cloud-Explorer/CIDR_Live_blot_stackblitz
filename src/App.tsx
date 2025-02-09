@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Network, Globe, AlertCircle, Palette, SunMoon } from 'lucide-react';
+import { Network, Globe, AlertCircle, Moon, Sun, Share2 } from 'lucide-react';
 import {
   calculateNetwork,
   calculateNetmask,
@@ -11,6 +11,7 @@ import {
 
 function App() {
   const [ip, setIp] = useState('192.168.1.1');
+  const [ipValid, setIpValid] = useState(true);
   const [cidr, setCidr] = useState('24');
   const [subnetCount, setSubnetCount] = useState(0);
   const [error, setError] = useState('');
@@ -19,6 +20,7 @@ function App() {
   const [isDark, setIsDark] = useState(() => 
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
+  const [showCopied, setShowCopied] = useState(false);
 
   const cidrRanges = Array.from({ length: 32 }, (_, i) => ({
     value: i + 1,
@@ -32,6 +34,11 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
+
+  const handleIpChange = (value: string) => {
+    setIp(value);
+    setIpValid(isValidIp(value));
+  };
 
   const calculateResults = () => {
     try {
@@ -94,82 +101,94 @@ function App() {
     }
   };
 
+  const handleShare = () => {
+    const shareUrl = `${window.location.origin}/${ip}/${cidr}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
+    });
+  };
+
   return (
     <div className="animated-bg">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex justify-end mb-6">
-          <button
-            role="switch"
-            aria-checked={isDark}
-            className="theme-switch"
-            onClick={() => setIsDark(!isDark)}
-          >
-            <span className="sr-only">Toggle theme</span>
-            {isDark ? (
-              <Palette className="theme-icon theme-icon-dark" />
-            ) : (
-              <SunMoon className="theme-icon theme-icon-light" />
-            )}
-          </button>
+        <div className="calculator-header">
+          <h1>CIDR Calculator</h1>
+          <p>Calculate network information and subnet ranges</p>
         </div>
 
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Network className="h-10 w-10 text-blue-400" />
-            <h1 className="text-4xl font-bold text-white">CIDR Calculator</h1>
+        <div className="flex justify-end mb-4">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleShare}
+              className="share-button"
+            >
+              <Share2 className="w-4 h-4" />
+              Share
+            </button>
+            <button
+              className="theme-switch"
+              onClick={() => setIsDark(!isDark)}
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <Sun className="theme-icon theme-icon-dark" />
+              ) : (
+                <Moon className="theme-icon theme-icon-light" />
+              )}
+            </button>
           </div>
-          <p className="text-gray-400 text-lg">Calculate network information and subnet ranges</p>
         </div>
 
         <div className="glass-panel p-8 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div>
-              <label className="block text-sm font-bold text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 IP Address
               </label>
               <input
                 type="text"
                 value={ip}
-                onChange={(e) => setIp(e.target.value)}
-                className="glass-input w-full text-white"
+                onChange={(e) => handleIpChange(e.target.value)}
+                className={`glass-input w-full ${!ipValid ? 'invalid-input' : ''}`}
                 placeholder="e.g. 192.168.1.1"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 CIDR Range
               </label>
               <select
                 value={cidr}
                 onChange={(e) => setCidr(e.target.value)}
-                className="glass-input w-full text-white"
+                className="glass-input w-full"
               >
                 {cidrRanges.map(({ value, ips }) => (
-                  <option key={value} value={value} className="bg-gray-900">
+                  <option key={value} value={value} className="bg-white dark:bg-gray-900">
                     /{value} - {ips.toLocaleString()} IP addresses
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 Number of Subnets
               </label>
               <select
                 value={subnetCount}
                 onChange={(e) => setSubnetCount(parseInt(e.target.value))}
-                className="glass-input w-full text-white"
+                className="glass-input w-full"
               >
-                <option value={0} className="bg-gray-900">No subnets</option>
+                <option value={0}>No subnets</option>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-                  <option key={num} value={num} className="bg-gray-900">{num}</option>
+                  <option key={num} value={num} className="bg-white dark:bg-gray-900">{num}</option>
                 ))}
               </select>
             </div>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-400 mb-6 p-4 glass-panel bg-red-500/10">
+            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 mb-6 p-4 glass-panel bg-red-50 dark:bg-red-500/10">
               <AlertCircle className="h-5 w-5" />
               <p className="font-bold">{error}</p>
             </div>
@@ -177,8 +196,8 @@ function App() {
 
           {networkInfo && (
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
-                <Globe className="h-6 w-6 text-blue-400" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+                <Globe className="h-6 w-6 text-blue-500" />
                 Network Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -216,12 +235,12 @@ function App() {
 
           {subnets.length > 0 && (
             <div className="subnet-table-container">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
-                <Network className="h-6 w-6 text-blue-400" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+                <Network className="h-6 w-6 text-blue-500" />
                 Subnet Information
               </h2>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-800">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                   <thead>
                     <tr>
                       <th className="table-header">Subnet Name</th>
@@ -233,9 +252,9 @@ function App() {
                       <th className="table-header">Zone</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800">
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                     {subnets.map((subnet, index) => (
-                      <tr key={index} className="hover:bg-white/5 transition-colors duration-150">
+                      <tr key={index} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-150">
                         <td className="table-cell">{subnet.name}</td>
                         <td className="table-cell-mono">{subnet.cidrBlock}</td>
                         <td className="table-cell-mono">{subnet.firstIp} - {subnet.lastIp}</td>
@@ -252,6 +271,11 @@ function App() {
           )}
         </div>
       </div>
+      {showCopied && (
+        <div className="copied-toast">
+          Link copied to clipboard!
+        </div>
+      )}
     </div>
   );
 }

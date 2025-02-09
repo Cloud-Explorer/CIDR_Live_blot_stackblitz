@@ -6,8 +6,8 @@
 
 :root {
   --primary-gradient: linear-gradient(135deg, rgb(59, 130, 246), rgb(147, 51, 234));
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.1);
   --glass-bg-dark: rgba(15, 23, 42, 0.6);
   --glass-border-dark: rgba(255, 255, 255, 0.1);
 }
@@ -45,9 +45,13 @@
 
 .animated-bg {
   @apply min-h-screen;
-  background: linear-gradient(-45deg, #1a1a2e, #16213e, #1b2a4a, #0f172a);
+  background: linear-gradient(-45deg, #ffffff, #f3f4f6, #ffffff, #f3f4f6);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
+}
+
+.dark .animated-bg {
+  background: linear-gradient(-45deg, #1a1a2e, #16213e, #1b2a4a, #0f172a);
 }
 
 .glass-panel {
@@ -62,9 +66,14 @@
 }
 
 .glass-input {
-  @apply bg-transparent border border-gray-300/20 rounded-lg px-4 py-2 
+  @apply bg-white dark:bg-transparent border rounded-lg px-4 py-2 
          focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
          transition-all duration-200 outline-none;
+  border-color: theme('colors.black');
+}
+
+.dark .glass-input {
+  @apply border-gray-300/20;
 }
 
 .glass-button {
@@ -73,61 +82,82 @@
          transition-all duration-200 transform hover:scale-105;
 }
 
+.share-button {
+  @apply flex items-center gap-2 px-4 py-2 rounded-lg
+         transition-all duration-200 transform hover:scale-105
+         text-white bg-gradient-to-r from-blue-500 to-purple-500
+         hover:from-blue-600 hover:to-purple-600;
+}
+
 @layer components {
   .network-info-card {
     @apply glass-panel p-6 transition-all duration-300
            hover:shadow-lg hover:shadow-blue-500/10
-           hover:border-blue-500/30 hover:scale-[1.02];
+           hover:scale-[1.02]
+           border-black dark:border-gray-300/20;
     animation: slideIn 0.3s ease-out forwards;
   }
 
   .network-info-label {
-    @apply text-sm font-semibold text-gray-400;
+    @apply text-sm font-semibold text-gray-600 dark:text-gray-400;
   }
 
   .network-info-value {
-    @apply font-mono font-bold text-gray-100;
+    @apply font-mono font-bold text-gray-900 dark:text-gray-100;
   }
 
   .table-header {
-    @apply px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider;
+    @apply px-6 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider;
   }
 
   .table-cell {
-    @apply px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-300;
+    @apply px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-700 dark:text-gray-300;
   }
 
   .table-cell-mono {
-    @apply px-6 py-4 whitespace-nowrap text-sm font-bold font-mono text-gray-100;
+    @apply px-6 py-4 whitespace-nowrap text-sm font-bold font-mono text-gray-900 dark:text-gray-100;
   }
 
   .subnet-table-container {
-    @apply glass-panel p-6 overflow-hidden;
+    @apply glass-panel p-6 overflow-hidden border-black dark:border-gray-300/20;
     animation: slideIn 0.4s ease-out forwards;
   }
 }
 
 .theme-switch {
-  @apply relative flex items-center justify-center w-12 h-12 rounded-full
-         backdrop-blur-md bg-white/10 border border-white/20
-         hover:bg-white/20 transition-all duration-300
-         hover:scale-110 hover:rotate-12;
-  background-image: linear-gradient(45deg, 
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.05)
-  );
+  @apply p-2 transition-all duration-300 hover:scale-110;
 }
 
 .theme-icon {
-  @apply w-5 h-5 transition-all duration-300;
+  @apply w-6 h-6 transition-all duration-300;
 }
 
 .theme-icon-light {
-  @apply text-yellow-300;
-  filter: drop-shadow(0 0 8px rgba(253, 224, 71, 0.5));
+  @apply text-purple-500;
 }
 
 .theme-icon-dark {
-  @apply text-purple-400;
-  filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+  @apply text-yellow-400;
+}
+
+.copied-toast {
+  @apply fixed top-4 right-4 px-4 py-2 bg-green-500 text-white rounded-lg
+         shadow-lg transform transition-all duration-300;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.calculator-header {
+  @apply w-full text-center py-4 mb-8;
+}
+
+.calculator-header h1 {
+  @apply text-5xl font-bold text-gray-900 dark:text-white mb-2;
+}
+
+.calculator-header p {
+  @apply text-xl text-gray-600 dark:text-gray-400 font-medium;
+}
+
+.invalid-input {
+  @apply border-red-500 bg-red-50 dark:bg-red-900/20;
 }
